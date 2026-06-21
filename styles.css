@@ -1256,15 +1256,13 @@ body.fullscreen-active .sheet-content {
     height: 36px;
   }
 
-  /* Horizontal Scrollable Toolbar for Mobile */
+  /* Optimized Wrapped Toolbar for Mobile (No Horizontal Scrolling) */
   .toolbar {
     display: flex;
-    flex-wrap: nowrap;
-    overflow-x: auto;
-    padding: 8px 12px;
-    gap: 12px;
-    -webkit-overflow-scrolling: touch;
-    scrollbar-width: none;
+    flex-wrap: wrap;
+    overflow-x: visible;
+    padding: 12px;
+    gap: 16px;
     border-bottom: 1px solid var(--border-strong);
   }
 
@@ -1273,15 +1271,38 @@ body.fullscreen-active .sheet-content {
   }
 
   .toolbar-group {
-    flex-shrink: 0;
+    flex-shrink: 1;
+    flex-grow: 1;
+    width: 100%;
     display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 8px;
+    gap: 8px 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--border-color);
+    position: relative;
     padding-right: 0;
+  }
+
+  .toolbar-group:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
   }
 
   .toolbar-group::after {
     display: none !important;
+  }
+
+  .group-label {
+    width: 100%;
+    margin-bottom: 2px;
+  }
+
+  /* Make sliders and controls clean on mobile */
+  .font-size-control input[type="range"],
+  .scroll-control input[type="range"] {
+    width: 90px;
   }
 
   .sheet {

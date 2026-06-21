@@ -260,7 +260,6 @@ function renderSong() {
   const meta = [];
   if (song.key) meta.push(`Key ${song.key}`);
   if (song.beat) meta.push(`Beat ${song.beat}`);
-  if (song.date) meta.push(song.date);
   els.meta.innerHTML = meta.map((item) => `<span>${escapeHtml(item)}</span>`).join("");
 
   const content = document.createElement("div");
