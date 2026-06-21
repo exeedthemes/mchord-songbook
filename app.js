@@ -270,13 +270,100 @@ function renderSong() {
   els.sheet.innerHTML = "";
   els.sheet.append(content);
 
-  // Append floating fullscreen toggle button wrapper and button directly inside the sheet area
+  // Append floating controls wrapper directly inside the sheet area
   const btnWrapper = document.createElement("div");
   btnWrapper.className = "sheet-btn-wrapper";
 
+  const controlsContainer = document.createElement("div");
+  controlsContainer.className = "sheet-floating-controls";
+
+  // 1. Play/Pause Scroll Button
+  const scrollBtn = document.createElement("button");
+  scrollBtn.className = "sheet-floating-btn sheet-scroll-btn";
+  scrollBtn.type = "button";
+  scrollBtn.title = "Toggle Auto Scroll";
+  scrollBtn.setAttribute("aria-label", "Toggle Auto Scroll");
+  scrollBtn.setAttribute("aria-pressed", state.autoScroll ? "true" : "false");
+  scrollBtn.innerHTML = `
+    <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor">
+      <polygon points="5 3 19 12 5 21 5 3"></polygon>
+    </svg>
+    <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" style="display: none;">
+      <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+      <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+    </svg>
+  `;
+  if (state.autoScroll) {
+    scrollBtn.querySelector(".icon-play").style.display = "none";
+    scrollBtn.querySelector(".icon-pause").style.display = "block";
+  }
+  scrollBtn.addEventListener("click", () => {
+    setAutoScroll(!state.autoScroll);
+  });
+  controlsContainer.append(scrollBtn);
+
+  // 2. Font Size Decrease Button
+  const fontDecBtn = document.createElement("button");
+  fontDecBtn.className = "sheet-floating-btn";
+  fontDecBtn.type = "button";
+  fontDecBtn.title = "Decrease Font Size";
+  fontDecBtn.setAttribute("aria-label", "Decrease Font Size");
+  fontDecBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  `;
+  fontDecBtn.addEventListener("click", () => {
+    const current = Number(els.fontSize.value);
+    const next = Math.max(Number(els.fontSize.min), current - 1);
+    els.fontSize.value = next;
+    document.documentElement.style.setProperty("--sheet-font-size", `${next}px`);
+  });
+  controlsContainer.append(fontDecBtn);
+
+  // 3. Font Size Increase Button
+  const fontIncBtn = document.createElement("button");
+  fontIncBtn.className = "sheet-floating-btn";
+  fontIncBtn.type = "button";
+  fontIncBtn.title = "Increase Font Size";
+  fontIncBtn.setAttribute("aria-label", "Increase Font Size");
+  fontIncBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <line x1="12" y1="5" x2="12" y2="19"></line>
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+    </svg>
+  `;
+  fontIncBtn.addEventListener("click", () => {
+    const current = Number(els.fontSize.value);
+    const next = Math.min(Number(els.fontSize.max), current + 1);
+    els.fontSize.value = next;
+    document.documentElement.style.setProperty("--sheet-font-size", `${next}px`);
+  });
+  controlsContainer.append(fontIncBtn);
+
+  // 4. Fit Width Toggle Button
+  const fitBtn = document.createElement("button");
+  fitBtn.className = "sheet-floating-btn";
+  fitBtn.type = "button";
+  fitBtn.title = "Toggle Fit Width";
+  fitBtn.setAttribute("aria-label", "Toggle Fit Width");
+  fitBtn.setAttribute("aria-pressed", state.fit ? "true" : "false");
+  fitBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M2 12h20M6 8l-4 4 4 4M18 8l4 4-4 4"></path>
+    </svg>
+  `;
+  fitBtn.addEventListener("click", () => {
+    state.fit = !state.fit;
+    els.fit.setAttribute("aria-pressed", state.fit ? "true" : "false");
+    renderSong();
+  });
+  controlsContainer.append(fitBtn);
+
+  // 5. Fullscreen Toggle Button
   const fsBtn = document.createElement("button");
   fsBtn.id = "sheetFullscreenBtn";
-  fsBtn.className = "sheet-fullscreen-btn";
+  fsBtn.className = "sheet-floating-btn sheet-fullscreen-btn";
   fsBtn.type = "button";
   fsBtn.title = "Toggle Fullscreen";
   fsBtn.setAttribute("aria-label", "Toggle Fullscreen");
@@ -290,7 +377,9 @@ function renderSong() {
     </svg>
   `;
   fsBtn.addEventListener("click", toggleFullscreen);
-  btnWrapper.append(fsBtn);
+  controlsContainer.append(fsBtn);
+
+  btnWrapper.append(controlsContainer);
   els.sheet.append(btnWrapper);
 
   updateTranspose();
@@ -360,6 +449,16 @@ function changeTranspose(step) {
 function setAutoScroll(enabled) {
   state.autoScroll = enabled;
   els.autoScroll.setAttribute("aria-pressed", enabled ? "true" : "false");
+  
+  // Sync all floating scroll buttons
+  document.querySelectorAll(".sheet-scroll-btn").forEach(btn => {
+    btn.setAttribute("aria-pressed", enabled ? "true" : "false");
+    const playIcon = btn.querySelector(".icon-play");
+    const pauseIcon = btn.querySelector(".icon-pause");
+    if (playIcon) playIcon.style.display = enabled ? "none" : "block";
+    if (pauseIcon) pauseIcon.style.display = enabled ? "block" : "none";
+  });
+
   if (state.scrollTimer) {
     window.clearInterval(state.scrollTimer);
     state.scrollTimer = null;
@@ -521,6 +620,21 @@ function updateFullscreenState() {
     document.body.classList.remove("fullscreen-active");
   }
   
+  // Mobile font size optimization in fullscreen mode
+  if (isFs) {
+    if (window.innerWidth <= 600 && !state.savedFontSize) {
+      state.savedFontSize = els.fontSize.value;
+      document.documentElement.style.setProperty("--sheet-font-size", "13px");
+      els.fontSize.value = 13;
+    }
+  } else {
+    if (state.savedFontSize) {
+      document.documentElement.style.setProperty("--sheet-font-size", `${state.savedFontSize}px`);
+      els.fontSize.value = state.savedFontSize;
+      delete state.savedFontSize;
+    }
+  }
+  
   if (els.fullscreen) {
     els.fullscreen.setAttribute("aria-pressed", isFs ? "true" : "false");
     const label = els.fullscreen.querySelector("span");
@@ -529,10 +643,10 @@ function updateFullscreenState() {
     }
   }
   
-  const fsBtn = document.querySelector("#sheetFullscreenBtn");
-  if (fsBtn) {
-    fsBtn.setAttribute("aria-pressed", isFs ? "true" : "false");
-  }
+  // Update all fullscreen button pressed states in the DOM
+  document.querySelectorAll(".sheet-fullscreen-btn").forEach(btn => {
+    btn.setAttribute("aria-pressed", isFs ? "true" : "false");
+  });
 }
 
 document.addEventListener("fullscreenchange", updateFullscreenState);
