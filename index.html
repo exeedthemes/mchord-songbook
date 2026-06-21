@@ -1,0 +1,192 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MChord Songbook</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600;750&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <aside class="library" aria-label="Song library">
+        <div class="brand">
+          <div class="logo-area">
+            <svg class="logo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 18V5l12-2v13"></path>
+              <circle cx="6" cy="18" r="3"></circle>
+              <circle cx="18" cy="16" r="3"></circle>
+            </svg>
+            <div>
+              <h1>MChord</h1>
+              <p id="libraryStats">Loading songs...</p>
+            </div>
+          </div>
+          <button id="clearAllFilters" class="text-button" type="button">Clear Filters</button>
+        </div>
+
+        <div class="filter-panel">
+          <div class="field-group">
+            <label for="searchInput">Search Songs</label>
+            <div class="control-with-action search-control-wrapper">
+              <svg class="search-input-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+              </svg>
+              <input id="searchInput" type="search" placeholder="Title, artist, lyrics..." autocomplete="off" />
+              <button id="clearSongFilter" class="icon-button inset-btn" type="button" title="Clear song search" aria-label="Clear song search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="field-group">
+            <label for="artistFilter">Filter by Artist</label>
+            <div class="control-with-action select-control-wrapper">
+              <input id="artistFilter" type="text" placeholder="Search or select artist..." list="artistDatalist" autocomplete="off" name="artist_filter_unique_prevent_autofill" aria-label="Filter by artist" />
+              <datalist id="artistDatalist"></datalist>
+              <button id="clearArtistFilter" class="icon-button inset-btn" type="button" title="Clear artist filter" aria-label="Clear artist filter">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <line x1="18" y1="6" x2="6" y2="18"></line>
+                  <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <button id="favoriteFilter" class="toggle-button" type="button" aria-pressed="false" title="Show favorites only">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+            <span>Favorites</span>
+          </button>
+        </div>
+
+        <div id="songList" class="song-list" role="listbox" aria-label="Songs"></div>
+      </aside>
+
+      <section class="viewer" aria-label="Selected song">
+        <header class="viewer-header">
+          <button id="mobileBackBtn" class="back-btn" type="button" title="Back to song list">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="15 18 9 12 15 6"></polyline>
+            </svg>
+          </button>
+          <div class="song-heading">
+            <p id="songArtist">Choose a song</p>
+            <h2 id="songTitle">All chords and lyrics</h2>
+            <div id="songMeta" class="meta"></div>
+          </div>
+          <div class="actions">
+            <button id="themeToggle" class="icon-button large" type="button" title="Toggle theme" aria-label="Toggle theme">
+              <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+              </svg>
+              <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="12" cy="12" r="5"></circle>
+                <line x1="12" y1="1" x2="12" y2="3"></line>
+                <line x1="12" y1="21" x2="12" y2="23"></line>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+                <line x1="1" y1="12" x2="3" y2="12"></line>
+                <line x1="21" y1="12" x2="23" y2="12"></line>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+              </svg>
+            </button>
+            <button id="favoriteButton" class="icon-button large" type="button" title="Toggle favorite">
+              <svg class="icon-outline" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+              <svg class="icon-solid" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+              </svg>
+            </button>
+            <button id="printButton" class="icon-button large" type="button" title="Print current song">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                <path d="M6 18H4a2 2 0 0 0-2 2v5a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-5a2 2 0 0 0-2-2h-2"></path>
+                <rect x="6" y="14" width="12" height="8"></rect>
+              </svg>
+            </button>
+          </div>
+        </header>
+
+        <div class="toolbar" aria-label="Viewer controls">
+          <div class="toolbar-group">
+            <span class="group-label">Typography</span>
+            <div class="font-size-control">
+              <label for="fontSize">Size</label>
+              <input id="fontSize" type="range" min="13" max="24" value="16" />
+            </div>
+            <button id="fitButton" type="button" aria-pressed="false" class="toolbar-btn">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <path d="M2 12h20M6 8l-4 4 4 4M18 8l4 4-4 4"></path>
+              </svg>
+              <span>Fit Width</span>
+            </button>
+            <button id="fullscreenButton" type="button" aria-pressed="false" class="toolbar-btn" title="Toggle Fullscreen">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" class="btn-icon">
+                <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"></path>
+              </svg>
+              <span>Fullscreen</span>
+            </button>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="group-label">Transpose Key</span>
+            <div class="scale-control" aria-label="Transpose controls">
+              <div id="transposeScales" class="scales-grid"></div>
+              <button id="resetTranspose" type="button" class="icon-button reset-btn" title="Reset Transpose">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"></path>
+                  <polyline points="3 3 3 8 8 8"></polyline>
+                </svg>
+              </button>
+            </div>
+          </div>
+
+          <div class="toolbar-group">
+            <span class="group-label">Auto Scroll</span>
+            <div class="scroll-control" aria-label="Auto scroll controls">
+              <button id="autoScroll" type="button" aria-pressed="false" class="scroll-play-btn">
+                <svg class="icon-play" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <svg class="icon-pause" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                  <rect x="6" y="4" width="4" height="16" rx="1"></rect>
+                  <rect x="14" y="4" width="4" height="16" rx="1"></rect>
+                </svg>
+                <span>Scroll</span>
+              </button>
+              <label for="scrollSpeed">Speed</label>
+              <input id="scrollSpeed" type="range" min="1" max="8" value="3" />
+            </div>
+          </div>
+        </div>
+
+        <article id="sheet" class="sheet">
+          <div class="empty-state">
+            <div class="empty-icon-wrapper">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+              </svg>
+            </div>
+            <h3>Select a song from the library</h3>
+            <p>Choose a song from the left pane to view chords, lyrics, and transpose keys.</p>
+          </div>
+        </article>
+      </section>
+    </main>
+
+    <script src="data.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,9 @@
+# Data & Database Dumps
+recovered.sqlite
+recovered.sqlite.bak
+recovered.sql
+extracted/
+
+# OS metadata
+.DS_Store
+**/.DS_Store
