@@ -1,0 +1,17 @@
+{
+  "name": "mchord-songbook",
+  "version": "1.0.0",
+  "description": "MChord Songbook - Modern Interactive Chords & Lyrics Viewer",
+  "scripts": {
+    "generate": "node tools/generate-data.mjs",
+    "update": "python3 tools/update-songbook.py"
+  },
+  "keywords": [
+    "chords",
+    "lyrics",
+    "music",
+    "songbook"
+  ],
+  "author": "",
+  "license": "ISC"
+}
