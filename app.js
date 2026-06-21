@@ -465,13 +465,19 @@ function setAutoScroll(enabled) {
   if (!enabled) return;
   state.scrollTimer = window.setInterval(() => {
     const speed = Number(els.scrollSpeed.value || 3);
-    const atBottom = els.sheet.scrollTop + els.sheet.clientHeight >= els.sheet.scrollHeight - 2;
-    if (atBottom) {
+    const prevScroll = els.sheet.scrollTop;
+    
+    // Use instant scrollBy to prevent smooth-scroll cancelation conflicts on mobile browsers
+    els.sheet.scrollBy(0, speed);
+    
+    const atBottom = els.sheet.scrollTop + els.sheet.clientHeight >= els.sheet.scrollHeight - 5;
+    const hasNotMoved = els.sheet.scrollTop === prevScroll;
+    
+    if (atBottom || hasNotMoved) {
       setAutoScroll(false);
       return;
     }
-    els.sheet.scrollBy({ top: speed, behavior: "smooth" });
-  }, 90);
+  }, 80);
 }
 
 function escapeHtml(value) {

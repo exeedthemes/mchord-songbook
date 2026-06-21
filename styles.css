@@ -852,9 +852,7 @@ body.light-theme .scroll-play-btn[aria-pressed="true"] {
   flex: 1;
   overflow-y: auto;
   padding: 16px 24px; /* Compact padding */
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  display: block;
   position: relative; /* Positioning context for floating controls */
 }
 
@@ -994,7 +992,7 @@ body.fullscreen-active .sheet-floating-controls {
     border-radius: 0 !important;
     border: none !important;
     box-shadow: none !important;
-    padding: 12px 52px 12px 12px !important; /* 52px padding on the right protects text from overlapping the 32px buttons */
+    padding: 12px 52px 120px 12px !important; /* Generous 120px bottom padding to prevent cut off and allow scrolling past end */
   }
 
   .sheet:fullscreen .sheet-content table,
@@ -1015,9 +1013,7 @@ body.fullscreen-active .sheet {
   background: var(--bg-viewer) !important;
   padding: 40px 24px !important;
   overflow-y: auto !important;
-  display: flex !important;
-  justify-content: center !important;
-  align-items: flex-start !important;
+  display: block !important;
 }
 
 /* Fallback viewport styling */
@@ -1058,7 +1054,8 @@ body.fullscreen-active .sheet-content {
   width: 100%;
   max-width: 800px;
   min-height: 100%;
-  padding: 24px; /* Compact padding */
+  margin: 0 auto; /* Horizontally center */
+  padding: 24px 24px 120px 24px; /* Generous bottom padding to allow scrolling past end */
   background: var(--bg-sheet);
   border: 1px solid var(--border-color);
   border-radius: 12px;
